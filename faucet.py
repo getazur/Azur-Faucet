@@ -137,7 +137,7 @@ def do_send(address,r):
     # simplewallet' procedure/method to call
     rpc_input = {
         "method": "sendTransaction",
-        "params": {"anonymity":1,
+        "params": {"anonymity": 1,
                    "transfers": recipents,
                    "unlockTime": 0,
                    "fee": 5,
