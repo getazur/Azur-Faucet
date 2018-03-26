@@ -32,8 +32,6 @@ app.config.update(dict(
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 ))
 
-
-
 csrf.init_app(app)
 db = SQLAlchemy(app)
 
@@ -66,7 +64,6 @@ def inject_x_rate_headers(response):
         h.add('X-RateLimit-Reset', str(limit.reset))
     return response
 
-
 @app.errorhandler(500)
 def internal_error(error):
     return json.dumps({'status':'Fail',
@@ -79,12 +76,10 @@ def index(form=None):
         form = FaucetForm()
     return render_template("index.html",shells=shells['available'],form=form,addr=ADDRESS)
 
-
 @app.route("/transfers", methods=["GET"])
 def get_transfers():
     transfers = db.session.query(Transfer).order_by(Transfer.id.desc()).limit(10).all()
     return render_template("transfers.html",transfers=transfers)
-
 
 @app.route("/pour", methods=["POST"])
 @ratelimit(limit=4, per=60*60*24)
@@ -100,7 +95,6 @@ def get_shells():
         return json.dumps({'status':'OK'}),200
     return json.dumps({'status':'Fail',
             'reason':'Make sure the captcha and address fields are filled'}),400
-
 
 ## code modified from https://moneroexamples.github.io/python-json-rpc/
 @app.route("/balance", methods=["GET"])
@@ -123,7 +117,6 @@ def shell_balance():
     av = float(data['result']['availableBalance'])
     lck = float(data['result']['lockedAmount'])
     return json.dumps({"available": str((av)/100),"locked": str((lck)/100)})
-
 
 def do_send(address,r):
     avail = json.loads(shell_balance())['available']
