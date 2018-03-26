@@ -11,14 +11,14 @@
     <div class="content">
       <div class="columns" style="justify-content: space-between; align-items: baseline;">
       <h1 class="has-text-white is-capitalized has-text-weight-light is-size-1-fullhd" style="margin: 0">Stellite Faucet</h1>
-      <h2 class="has-text-white is-capitalized has-text-weight-light is-size-5-fullhd" style="margin: 0;"><span id="numshells">{{ shells }}</span> XTL remaining</h2>
+      <h2 class="has-text-white is-capitalized has-text-weight-light is-size-5-fullhd" style="margin: 0;"><span id="numshells">{{ shells }}</span> XTLs remaining</h2>
     </div>
       <img src="{{ url_for('static', filename='img/stellite_logo.svg') }}" class="image">
       <form method="POST" action="{{ url_for('get_shells') }}" id="shellform">
         {{ form.csrf_token }}
         {{ form.fingerprint }}
         <div class="field">
-          <label class="label has-text-centered">Enter Your Stellite Address To Get Free XTL!</label>
+          <label class="label has-text-centered">Enter Your Stellite Address To Get Free XTLs!</label>
           <div class="control" style="width: 75%; margin: auto;">
            {{ form.address(class_="input",id="addressinput") }}
           </div>
