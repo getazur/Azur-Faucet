@@ -114,8 +114,8 @@ def shell_balance():
     data = response.json()
     app.logger.info("balance_rpc: "+str(data))
 
-    av = float(data['result']['availableBalance'])
-    lck = float(data['result']['lockedAmount'])
+    av = float(data['result']['balance'])
+    lck = float(data['result']['unlocked_balance'])
     return json.dumps({"available": str((av)/100),"locked": str((lck)/100)})
 
 def do_send(address,r):
