@@ -11,7 +11,7 @@ nav {
 }
 
 #particles-js {
-  background: linear-gradient(to right, #2ecc71 0%,#27aa6b 35%,#2ecc71 64%,#229379 100%);
+  background: #654e91;
   position:fixed;
   top:3.25rem;
   right:0;
