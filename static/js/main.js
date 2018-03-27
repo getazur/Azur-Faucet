@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 $("#addressinput").attr('placeholder',"Se3nJgNQWm44Loif291aRU3NsLrc9qN8VbLi9JtSVz2KUnESZSFbhrKMcKDyjmqZZdWKcB7t4nNAkUbkzLaNk8vY2ta7BjkQU");
 
-if (parseInt($("#numshells").text())<=100) {
+if (parseInt($("#numshells").text())<=10) {
   $("#addressinput").prop('disabled',true);
   $("#addressinput").attr('placeholder',"The Faucet is too low! Come back later");
 } else {
