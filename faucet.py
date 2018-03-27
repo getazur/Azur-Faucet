@@ -100,7 +100,7 @@ def get_shells():
 @app.route("/balance", methods=["GET"])
 def shell_balance():
     rpc_input = {
-        "method": "getBalance"
+        "method": "getbalance"
     }
 
     # add standard rpc values
