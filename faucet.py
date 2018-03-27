@@ -121,20 +121,20 @@ def shell_balance():
 def do_send(address,r):
     avail = json.loads(shell_balance())['available']
     int_amount = 300
+    mixin = 4
 
     recipents = [{"address": address,
                   "amount": int_amount}]
 
     # get some random payment_id
     payment_id = get_payment_id()
+
     # simplewallet' procedure/method to call
     rpc_input = {
-        "method": "sendTransaction",
-        "params": {"anonymity": 1,
-                   "transfers": recipents,
-                   "unlockTime": 0,
-                   "fee": 5,
-                   "paymentId": payment_id}
+        "method": "transfer",
+        "params": {"destinations": recipents,
+                   "mixin": mixin,
+                   "payment_id" : payment_id}
     }
 
     # add standard rpc values
