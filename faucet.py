@@ -14,7 +14,7 @@ import os
 import binascii
 
 ADDRESS = os.environ.get("FAUCET_ADDR")
-RPC_URL = "http://localhost:8080/json_rpc"
+RPC_URL = "http://127.0.0.1:8080/json_rpc"
 HEADERS = {'content-type': 'application/json'}
 
 RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
