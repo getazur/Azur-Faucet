@@ -121,7 +121,7 @@ def shell_balance():
 def do_send(address,r):
     avail = json.loads(shell_balance())['available']
     int_amount = 300
-    mixin = 4
+    mixin = 2
 
     recipents = [{"address": address,
                   "amount": int_amount}]
