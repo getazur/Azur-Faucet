@@ -150,7 +150,7 @@ def do_send(address,r):
     app.logger.info("FROM IP: "+r.environ['REMOTE_ADDR'])
     if "error" in response.json():
         return json.dumps({"status": "Fail", "reason": response.json()["error"]["message"]})
-    tx_hash = response.json()['result']['transactionHash']
+    tx_hash = response.json()['result']['tx_hash']
     transfer = Transfer(destination=address,
         payment_id=payment_id,
         amount = int_amount,
