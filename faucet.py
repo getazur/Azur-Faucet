@@ -82,7 +82,7 @@ def get_transfers():
     return render_template("transfers.html",transfers=transfers)
 
 @app.route("/pour", methods=["POST"])
-@ratelimit(limit=4, per=60*60*24)
+@ratelimit(limit=2, per=60*60*24)
 def get_shells():
     form = FaucetForm()
     if form.address.data==ADDRESS:
