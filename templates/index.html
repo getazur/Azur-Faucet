@@ -25,7 +25,10 @@
            {{ form.address(class_="input",id="addressinput") }}
           </div>
         </div>
-        <p class="has-text-centered" style="overflow-wrap: break-word; color: #ffffff;">Support & Donations: {{ addr }}</p>
+        <p class="has-text-centered" style="overflow-wrap: break-word; color: #ffffff;">Support & Donations:</p>
+        <p class="has-text-centered" style="overflow-wrap: break-word; color: #ffffff;">{{ addr }} (XTL)</p>
+        <p class="has-text-centered" style="overflow-wrap: break-word; color: #ffffff;">{{ 1M4ACvwyA5MKPsqMvrVs4sqynYMBF61BU1 }} (BTC)</p>
+        <p class="has-text-centered" style="overflow-wrap: break-word; color: #ffffff;">{{ LV4CdxicudveZmfbxqwKan7HyiA1vbqW7B }} (LTC)</p>
         <p>
           {% for error in form.recaptcha.errors %}
             {{ error }}
