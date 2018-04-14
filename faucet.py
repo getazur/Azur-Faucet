@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, g
+    from flask import Flask, render_template, request, g
 from flask_sqlalchemy import SQLAlchemy
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
@@ -116,11 +116,11 @@ def shell_balance():
 
     av = float(data['result']['balance'])
     lck = float(data['result']['unlocked_balance'])
-    return json.dumps({"available": str((av)/100),"locked": str((lck)/100)})
+    return json.dumps({"available": str((av)/20),"locked": str((lck)/20)})
 
 def do_send(address,r):
     avail = json.loads(shell_balance())['available']
-    int_amount = 100
+    int_amount = 20
     mixin = 0
 
     recipents = [{"address": address,

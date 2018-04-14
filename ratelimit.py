@@ -39,7 +39,7 @@ def get_view_rate_limit():
 
 def on_over_limit(limit):
     return json.dumps({'status':'Fail',
-        'reason':'You can only use the faucet 1 XTL/day'}),429
+        'reason':'You can only use the faucet 0.2 XTL/day'}),429
 
 def ratelimit(limit, per=100, send_x_headers=True,
               over_limit=on_over_limit,
