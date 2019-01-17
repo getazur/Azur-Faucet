@@ -12,29 +12,23 @@ import requests
 import json
 import os
 import binascii
-
 ADDRESS = os.environ.get("FAUCET_ADDR")
 RPC_URL = "http://127.0.0.1:8080/json_rpc"
 HEADERS = {'content-type': 'application/json'}
-
 RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
 RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
 RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 csrf = CSRFProtect()
-
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object(__name__)
-
 app.config.update(dict(
     SECRET_KEY=os.environ.get("SECRET_KEY"),
     WTF_CSRF_SECRET_KEY=os.environ.get("WTF_CSRF_SECRET_KEY"),
     SQLALCHEMY_DATABASE_URI='sqlite:///faucet.db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 ))
-
 csrf.init_app(app)
 db = SQLAlchemy(app)
-
 class Transfer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     destination = db.Column(db.String(99), nullable=False)
@@ -48,12 +42,10 @@ class Transfer(db.Model):
     fp = db.Column(db.String(32), nullable=False)
     def __repr__(self):
         return '<Transfer %r: %d sent to %s>' % (self.tx_hash,self.amount,self.destination)
-
 class FaucetForm(FlaskForm):
     recaptcha = RecaptchaField()
     address = StringField('address', validators=[DataRequired()])
     fingerprint = HiddenField('fingerprint')
-
 @app.after_request
 def inject_x_rate_headers(response):
     limit = get_view_rate_limit()
@@ -63,26 +55,23 @@ def inject_x_rate_headers(response):
         h.add('X-RateLimit-Limit', str(limit.limit))
         h.add('X-RateLimit-Reset', str(limit.reset))
     return response
-
 @app.errorhandler(500)
 def internal_error(error):
     return json.dumps({'status':'Fail',
             'reason':'Server Error'})
-
 @app.route("/")
 def index(form=None):
     shells = json.loads(shell_balance())
     if form is None:
         form = FaucetForm()
     return render_template("index.html",shells=shells['available'],form=form,addr=ADDRESS)
-
 @app.route("/transfers", methods=["GET"])
 def get_transfers():
     transfers = db.session.query(Transfer).order_by(Transfer.id.desc()).limit(10).all()
     return render_template("transfers.html",transfers=transfers)
 
 @app.route("/pour", methods=["POST"])
-@ratelimit(limit=2, per=60*60*24)
+@ratelimit(limit=10, per=60*60*24)
 def get_shells():
     form = FaucetForm()
     if form.address.data==ADDRESS:
@@ -100,7 +89,7 @@ def get_shells():
 @app.route("/balance", methods=["GET"])
 def shell_balance():
     rpc_input = {
-        "method": "getbalance"
+        "method": "getBalance"
     }
 
     # add standard rpc values
@@ -114,14 +103,14 @@ def shell_balance():
     data = response.json()
     app.logger.info("balance_rpc: "+str(data))
 
-    av = float(data['result']['balance'])
-    lck = float(data['result']['unlocked_balance'])
+    av = float(data['result']['availableBalance'])
+    lck = float(data['result']['lockedAmount'])
     return json.dumps({"available": str((av)/100),"locked": str((lck)/100)})
 
 def do_send(address,r):
     avail = json.loads(shell_balance())['available']
-    int_amount = 100
-    mixin = 0
+    int_amount = 1000
+    mixin = 2
 
     recipents = [{"address": address,
                   "amount": int_amount}]
@@ -131,10 +120,10 @@ def do_send(address,r):
 
     # simplewallet' procedure/method to call
     rpc_input = {
-        "method": "transfer",
-        "params": {"destinations": recipents,
-                   "mixin": mixin,
-                   "payment_id" : payment_id}
+        "method": "sendTransaction",
+        "params": {"transfers": recipents,
+                   "anonymity": 2,
+                   "fee": 10}
     }
 
     # add standard rpc values
@@ -146,11 +135,12 @@ def do_send(address,r):
          data=json.dumps(rpc_input),
          headers=HEADERS)
     # pretty print json output
-    app.logger.info(json.dumps(response.json(), indent=4))
     app.logger.info("FROM IP: "+r.environ['REMOTE_ADDR'])
     if "error" in response.json():
+        app.logger.info("ERROR: "+response.text)
         return json.dumps({"status": "Fail", "reason": response.json()["error"]["message"]})
-    tx_hash = response.json()['result']['tx_hash']
+    app.logger.info("SUCCESS: "+response.text)
+    tx_hash = response.json()['result']['transactionHash']
     transfer = Transfer(destination=address,
         payment_id=payment_id,
         amount = int_amount,
